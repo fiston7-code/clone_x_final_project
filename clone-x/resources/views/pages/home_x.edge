@@ -1,0 +1,141 @@
+@layout.app({ title: "Accueil / X" })
+
+@slot('meta')
+<meta name="description" content="Your Home Timeline on X.">
+@endslot
+
+@slot('main')
+<div class="min-h-screen bg-black text-white flex justify-center">
+
+    <!-- Layout principal -->
+
+
+    <!-- Sidebar gauche -->
+    @!component('components/side_bar', { currentUser: auth.user })
+
+    <!-- Timeline centrale -->
+    <main class="flex-1 border-x border-gray-800 max-w-2xl">
+        <div
+            class="p-2 border-b border-gray-700 sticky w-full backdrop-blur-lg top-0 z-20  overflow-x-auto lg:overflow-x-hidden cursor-pointer">
+            <nav class="main-nav">
+                <a href="" class="hover:bg-gray-800 px-3 py-2 rounded transition duration-300 text-white">Pour vous</a>
+                <a href="#" class="hover:bg-gray-800 px-3 py-2 rounded transition duration-300 text-white">Page de
+                    profil</a>
+                <a href="#"
+                    class="hover:bg-gray-800 px-3 py-2 rounded transition duration-300 text-white">E-commerce</a>
+                <a href="#"
+                    class="hover:bg-gray-800 px-3 py-2 rounded transition duration-300 text-white">Web-developer</a>
+            </nav>
+
+        </div>
+
+        <!-- Éditeur de tweet -->
+        <div class="p-4 border-b border-gray-800">
+            <form method="POST" action="/tweets" class="space-y-4">
+                {{ csrfField() }}
+                <div class="flex space-x-3">
+                    <img src="" alt="avatar" class="w-12 h-12 rounded-full object-cover">
+                    <textarea name="content" rows="2" placeholder="What's happening?"
+                        class="w-full bg-transparent text-white placeholder-gray-500 focus:outline-none resize-none"></textarea>
+                </div>
+                <div class="flex justify-end">
+                    <button
+                        class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-full transition">
+                        Post
+                    </button>
+                </div>
+            </form>
+        </div>
+        <!-- Liste des tweets -->
+        <div id="tweetList">
+            @each(tweet in tweets)
+            <div class="border-b border-gray-800 p-4 hover:bg-gray-950 transition">
+                <div class="flex space-x-3">
+                    <img src="" alt="avatar" class="w-10 h-10 rounded-full object-cover">
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-2">
+                            <p class="font-semibold"></p>
+                            <span class="text-gray-500 text-sm">@{{ tweet.user.username }} · {{
+                                tweet.createdAt.toRelative() }}</span>
+                        </div>
+                        <p class="mt-1 text-gray-200"></p>
+
+                        <!-- Boutons d’action -->
+                        <div class="flex justify-between text-gray-500 text-sm mt-3 max-w-xs">
+                            <button class="hover:text-blue-400"><i class="fa-regular fa-comment"></i></button>
+                            <button class="hover:text-green-400"><i class="fa-solid fa-retweet"></i></button>
+                            <button class="hover:text-pink-500"><i class="fa-regular fa-heart"></i></button>
+                            <button class="hover:text-gray-400"><i class="fa-solid fa-share"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endeach
+        </div>
+    </main>
+
+    <!-- Colonne droite -->
+    <aside class="hidden lg:block w-1/3 px-6 py-4 space-y-6">
+
+        <form action="/search" method="GET" class="w-full max-w-md mx-auto mt-4 px-4 relative">
+            <!-- Icône de recherche -->
+            <i class="fa-solid fa-magnifying-glass absolute left-7 top-1/2 -translate-y-1/2 text-gray-400"></i>
+
+            <!-- Champ de recherche -->
+            <input type="text" name="q" placeholder="Rechercher un hashtag (#dev, #news...)"
+                class="w-full rounded-full bg-gray-900 text-white placeholder-gray-500 pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#1D9BF0]" />
+        </form>
+
+
+        <div class="bg-gray-900 rounded-2xl p-4">
+            <h3 class="text-xl font-bold mb-4">What’s happening</h3>
+            <div class="space-y-3">
+                <div>
+                    <p class="text-gray-400 text-sm">Trending in Tech</p>
+                    <p class="font-semibold">#AdonisJS</p>
+                </div>
+                <div>
+                    <p class="text-gray-400 text-sm">Trending in Music</p>
+                    <p class="font-semibold">#Afrobeats</p>
+                </div>
+                <div>
+                    <p class="text-gray-400 text-sm">Trending in Sports</p>
+                    <p class="font-semibold">#RDCongo</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-gray-900 rounded-2xl p-4">
+            <h3 class="text-xl font-bold mb-4">Who to follow</h3>
+            <div class="space-y-3">
+                @each(suggest in suggestions)
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <img src="" class="w-10 h-10 rounded-full object-cover">
+                        <div>
+                            <p class="font-semibold">{{ suggest.fullName }}</p>
+                            <p class="text-gray-500 text-sm">@{{ suggest.username }}</p>
+                        </div>
+                    </div>
+                    <button
+                        class="bg-white text-black font-semibold px-3 py-1 rounded-full hover:bg-gray-200 transition">
+                        Follow
+                    </button>
+                </div>
+                @endeach
+            </div>
+        </div>
+    </aside>
+</div>
+</div>
+
+<!-- Mobile bottom nav -->
+<nav
+    class="fixed bottom-0 left-0 right-0 bg-black border-t border-gray-800 flex justify-around py-3 text-gray-400 md:hidden">
+    <a href="#" class="hover:text-blue-400"><i class="fa-solid fa-house text-lg"></i></a>
+    <a href="#" class="hover:text-blue-400"><i class="fa-solid fa-magnifying-glass text-lg"></i></a>
+    <a href="#" class="hover:text-blue-400"><i class="fa-regular fa-bell text-lg"></i></a>
+    <a href="#" class="hover:text-blue-400"><i class="fa-regular fa-envelope text-lg"></i></a>
+</nav>
+@endslot
+@end

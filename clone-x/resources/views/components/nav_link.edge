@@ -1,0 +1,8 @@
+<a href="{{ href || '#' }}" {{-- Fusion des classes de base et des classes personnalisées --}}
+    class="flex items-center gap-3 p-3 hover:rounded-full hover:bg-gray-500 text-white font-medium">
+    {{-- L'icône (classe Font Awesome) --}}
+    <i class="{{ icon }}"></i>
+
+    {{-- Le texte du lien --}}
+    {{ text }}
+</a>

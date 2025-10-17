@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>{{ title || "default title" }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+   
+    @if ($slots.meta)
+    {{{ await $slots.meta() }}}
+    @endif
+</head>
+
+<body class="bg-black text-[#fff] w-full h-screen items-center">
+    {{{ await $slots.main() }}}
+</body>
+
+</html>

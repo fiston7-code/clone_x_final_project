@@ -1,0 +1,86 @@
+@layout.auth({ title: "X - Accueil" })
+
+@slot('meta')
+<meta name="description" content="Bienvenue sur X - Connectez-vous ou inscrivez-vous.">
+@endslot
+
+@slot('main')
+<div class="min-h-screen flex items-center justify-center bg-black text-white px-4">
+
+    <!-- Bloc principal -->
+    <div class="w-full max-w-md bg-gray-900 rounded-2xl shadow-lg p-8 space-y-6">
+
+        <!-- Logo -->
+        <div class="flex justify-center mb-4 ">
+            <i class="fa-brands fa-x-twitter "></i
+            >
+        </div>
+
+        <!-- Titre -->
+        <h1 class="text-2xl font-bold text-center">
+            Créer votre compte
+        </h1>
+
+        <!-- Séparateur -->
+        <div class="flex items-center my-4">
+            <hr class="flex-grow border-gray-700">
+            <span class="mx-2 text-gray-500"></span>
+            <hr class="flex-grow border-gray-700">
+        </div>
+
+        <!-- Formulaire d'inscription -->
+        <form method="POST" action=" {{route('store.user')}} " class="space-y-4">
+            {{ csrfField() }}
+
+            @!form.input({
+            id: 'name',
+            name: 'name',
+            type: 'text',
+            placeholder: 'Nom complet',
+            })
+
+            @!form.input({
+            id: 'pseudo',
+            name: 'pseudo',
+            type: 'text',
+            placeholder: 'votre pseudo unique',
+
+            })
+
+            @!form.input({
+            type: 'email',
+            id: 'email',
+            name: 'email',
+            placeholder: 'Adresse e-mail',
+
+            })
+
+            @!form.input({
+            type: 'password',
+            id: 'password',
+            name: 'password',
+            placeholder: 'Mot de passe',
+
+            })
+
+             @!component('components/button', { text: 'S’inscrire' })
+        </form>
+
+         <!-- Flash message d'erreur -->
+        @if(flashMessages.has('error'))
+        <p class="bg-red-100 text-red-700 p-3 rounded-md mt-4">
+            {{ flashMessages.get('error') }}
+        </p>
+        @endif
+
+        <p class="text-center text-sm text-gray-400 mt-6">
+            Vous avez déjà un compte ?
+            <a href="{{route('login.show')}} " class="text-blue-400 hover:underline">
+                Connectez-vous
+            </a>
+        </p>
+
+    </div>
+</div>
+@endslot
+@end

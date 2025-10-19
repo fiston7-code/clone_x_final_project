@@ -3,22 +3,18 @@
 @slot('meta')
 <meta name="description" content="Your Home Timeline on X.">
 @endslot
-
 @slot('main')
-<div class="min-h-screen bg-black text-white flex justify-center">
-
-    <!-- Layout principal -->
-
+<div class="flex flex-col lg:flex-row min-h-screen bg-white text-black w-full">
 
     <!-- Sidebar gauche -->
     @!component('components/side_bar', { currentUser: auth.user })
 
     <!-- Timeline centrale -->
-    <main class="flex-1 border-x border-gray-800 max-w-2xl">
+    <main class=" border-x border-gray-800 w-full bg-black max-w-2xl">
         <div
-            class="p-2 border-b border-gray-700 sticky w-full backdrop-blur-lg top-0 z-20  overflow-x-auto lg:overflow-x-hidden cursor-pointer">
-            <nav class="main-nav">
-                <a href="" class="hover:bg-gray-800 px-3 py-2 rounded transition duration-300 text-white">Pour vous</a>
+            class="p-4 border-b border-gray-700 sticky w-full backdrop-blur-lg top-0 z-20  overflow-x-auto lg:overflow-x-hidden cursor-pointer">
+            <nav>
+                <a href="#" class="hover:bg-gray-800 px-3 py-2 rounded transition duration-300 text-white">Pour vous</a>
                 <a href="#" class="hover:bg-gray-800 px-3 py-2 rounded transition duration-300 text-white">Page de
                     profil</a>
                 <a href="#"
@@ -31,13 +27,23 @@
 
         <!-- Éditeur de tweet -->
         <div class="p-4 border-b border-gray-800">
-            <form method="POST" action="/tweets" class="space-y-4">
+            <form method="POST" action="{{route('postTweet')}}" enctype="multipart/form-data" class="space-y-4">
                 {{ csrfField() }}
                 <div class="flex space-x-3">
                     <img src="" alt="avatar" class="w-12 h-12 rounded-full object-cover">
                     <textarea name="content" rows="2" placeholder="What's happening?"
                         class="w-full bg-transparent text-white placeholder-gray-500 focus:outline-none resize-none"></textarea>
                 </div>
+                <div class="flex gap-4 text-lg ">
+                    <input type="file" id="tweet-image" name="media" class="hidden" />
+                    <label for="tweet-image" class="mt-2  text-blue-500 cursor-pointer"><i
+                            class="fa-solid fa-image"></i></label>
+                    <a href="" class="text-blue-500 mt-2 cursor-pointer"><i class="fa-solid fa-face-smile"></i></a>
+                    <a href="" class="text-blue-500 mt-2 cursor-pointer"><i class="fa-solid fa-house"></i></a>
+                    <a href="" class="text-blue-500 mt-2 cursor-pointer"><i class="fa-solid fa-location-dot"></i></a>
+                    <a href="" class="text-blue-500 mt-2 cursor-pointer"><i class="fa-solid fa-square-binary"></i></a>
+                </div>
+
                 <div class="flex justify-end">
                     <button
                         class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-full transition">
@@ -51,16 +57,24 @@
             @each(tweet in tweets)
             <div class="border-b border-gray-800 p-4 hover:bg-gray-950 transition">
                 <div class="flex space-x-3">
-                    <img src="" alt="avatar" class="w-10 h-10 rounded-full object-cover">
+                    <img src="/uploads/{{ tweet.user.avatar }}" alt="avatar"
+                        class="w-10 h-10 rounded-full object-cover">
                     <div class="flex-1">
                         <div class="flex items-center space-x-2">
-                            <p class="font-semibold"></p>
-                            <span class="text-gray-500 text-sm">@{{ tweet.user.username }} · {{
-                                tweet.createdAt.toRelative() }}</span>
+                            <p class="font-semibold text-white">{{ tweet.user.name}}</p>
+                            <span class="text-gray-500 text-sm">{{ tweet.user.pseudo }} ·{{ tweet.createdAt ?
+                                tweet.createdAt.toFormat('dd/MM/yyyy') : 'Aucune date' }}</span>
                         </div>
-                        <p class="mt-1 text-gray-200"></p>
+                        <p class="mt-1 text-gray-200">{{ tweet.content }}</p>
 
-                        <!-- Boutons d’action -->
+                        <!-- Afficher le média si présent -->
+                        @if(tweet.mediaUrl)
+                        <div class="mt-2">
+                            <img src="{{ '/' + tweet.mediaUrl }}" alt="media"
+                                class="w-full rounded-lg object-cover max-h-85">
+                        </div>
+                        @endif
+
                         <div class="flex justify-between text-gray-500 text-sm mt-3 max-w-xs">
                             <button class="hover:text-blue-400"><i class="fa-regular fa-comment"></i></button>
                             <button class="hover:text-green-400"><i class="fa-solid fa-retweet"></i></button>
@@ -70,14 +84,15 @@
                     </div>
                 </div>
             </div>
-            @endeach
+            @end
         </div>
     </main>
 
-    <!-- Colonne droite -->
-    <aside class="hidden lg:block w-1/3 px-6 py-4 space-y-6">
 
-        <form action="/search" method="GET" class="w-full max-w-md mx-auto mt-4 px-4 relative">
+    <!-- Colonne droite -->
+    <aside class=" hidden lg:w-3/5 lg:block bg-black flex flex-col justify-between  sticky top-0 h-screen w-full ">
+
+        <form action=" /search" method="GET" class="w-full max-w-md  mt-4 px-4 relative">
             <!-- Icône de recherche -->
             <i class="fa-solid fa-magnifying-glass absolute left-7 top-1/2 -translate-y-1/2 text-gray-400"></i>
 
@@ -108,12 +123,12 @@
         <div class="bg-gray-900 rounded-2xl p-4">
             <h3 class="text-xl font-bold mb-4">Who to follow</h3>
             <div class="space-y-3">
-                @each(suggest in suggestions)
+                {{-- @each(suggest in suggestions) --}}
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-3">
                         <img src="" class="w-10 h-10 rounded-full object-cover">
                         <div>
-                            <p class="font-semibold">{{ suggest.fullName }}</p>
+                            <p class="font-semibold"></p>
                             <p class="text-gray-500 text-sm">@{{ suggest.username }}</p>
                         </div>
                     </div>
@@ -122,11 +137,10 @@
                         Follow
                     </button>
                 </div>
-                @endeach
+                {{-- @endeach --}}
             </div>
         </div>
     </aside>
-</div>
 </div>
 
 <!-- Mobile bottom nav -->

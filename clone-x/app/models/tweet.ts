@@ -32,6 +32,12 @@ export default class Tweet extends BaseModel {
   @hasMany(() => Like)
   declare likes: HasMany<typeof Like>
 
+  @hasMany(() => Tweet, {
+    foreignKey: 'parentId',
+  })
+  @hasMany(() => Tweet)
+  declare replies: HasMany<typeof Tweet>
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 

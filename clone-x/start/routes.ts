@@ -16,6 +16,7 @@ const AuthController = () => import('#controllers/authController')
 const SessionController = () => import('#controllers/session_controller')
 const TweetsController = () => import('#controllers/tweets_controller')
 const LikesController = () => import('#controllers/likes_controller')
+const RetweetsController = () => import('#controllers/retweets_controller')
 
 // router.on('/').render('pages/home')
 
@@ -52,6 +53,28 @@ router.get('/uploads/*', async ({ request, response }) => {
 // route for like
 
 router.post('/like/:id', [LikesController, 'toggleLike']).as('tweets.like').use(middleware.auth())
+
+// route for retweet
+router
+  .post('/tweets/:id/retweet', [RetweetsController, 'toggleRetweet'])
+  .as('tweet.retweet')
+  .use(middleware.auth())
+router
+  .post('/tweets/:id/quote', [RetweetsController, 'quote'])
+  .as('tweet.quote')
+  .use(middleware.auth())
+
+// route for reply
+router
+  .post('/tweets/:id/reply', [TweetsController, 'reply'])
+  .as('tweets.reply')
+  .use(middleware.auth())
+
+// route for delete tweet
+router
+  .post('/tweets/:id', [TweetsController, 'deleteTweet'])
+  .as('tweets.delete')
+  .use(middleware.auth())
 
 // store and login users
 router.post('/register', [AuthController, 'storeUser']).as('store.user')

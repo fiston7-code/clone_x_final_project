@@ -62,10 +62,53 @@ export default class TweetsController {
     }
   }
 
+  // reply a un tweet
+
+  public async reply({ params, request, response, auth }: HttpContext) {
+    const user = auth.user
+    if (!user) return response.unauthorized('User not authenticated')
+
+    const { content } = request.only(['content'])
+    const parentId = params.id
+
+    await user.related('tweets').create({
+      content,
+      parentId, // le tweet auquel on répond
+    })
+
+    return response.redirect().back()
+  }
+
+  // suppression d'un tweet
+
+  public async deleteTweet({ params, response, auth }: HttpContext) {
+    const user = auth.user
+    if (!user) return response.unauthorized('User not authenticated')
+
+    const tweet = await Tweet.find(params.id)
+    if (!tweet) return response.notFound('Tweet not found')
+
+    if (tweet.userId !== user.id) {
+      return response.forbidden("Vous n'avez pas la permission de supprimer ce tweet.")
+    }
+
+    await tweet.delete()
+    return response.redirect().toRoute('home.show')
+  }
+
+  // affichage de tous les tweets
+
   public async showAllTweets({ view }: HttpContext) {
     const tweets = await Tweet.query()
       .preload('user', (query) => query.select(['id', 'name', 'pseudo', 'avatar']))
       .preload('likes', (query) => query.select(['user_id']))
+      .preload('replies', (query) =>
+        query
+          .preload('user', (query) => query.select(['id', 'name', 'pseudo', 'avatar']))
+          .preload('likes', (query) => query.select(['user_id']))
+          .select(['id', 'content', 'user_id', 'parent_id', 'created_at'])
+      )
+      .whereNull('parent_id')
       .orderBy('created_at', 'desc')
 
     return view.render('pages/home_x', { tweets: tweets })

@@ -15,6 +15,7 @@ import app from '@adonisjs/core/services/app'
 const AuthController = () => import('#controllers/authController')
 const SessionController = () => import('#controllers/session_controller')
 const TweetsController = () => import('#controllers/tweets_controller')
+const LikesController = () => import('#controllers/likes_controller')
 
 // router.on('/').render('pages/home')
 
@@ -47,6 +48,10 @@ router.get('/uploads/*', async ({ request, response }) => {
     return response.notFound('Fichier introuvable')
   }
 })
+
+// route for like
+
+router.post('/like/:id', [LikesController, 'toggleLike']).as('tweets.like').use(middleware.auth())
 
 // store and login users
 router.post('/register', [AuthController, 'storeUser']).as('store.user')

@@ -1,7 +1,9 @@
 import { DateTime } from 'luxon'
 import User from '#models/user'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
-import { column, BaseModel, belongsTo } from '@adonisjs/lucid/orm'
+import { column, BaseModel, belongsTo, hasMany } from '@adonisjs/lucid/orm'
+import type { HasMany } from '@adonisjs/lucid/types/relations'
+import Like from '#models/like'
 
 export default class Tweet extends BaseModel {
   @column({ isPrimary: true })
@@ -26,6 +28,9 @@ export default class Tweet extends BaseModel {
     foreignKey: 'parentId',
   })
   declare parent: BelongsTo<typeof Tweet>
+
+  @hasMany(() => Like)
+  declare likes: HasMany<typeof Like>
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

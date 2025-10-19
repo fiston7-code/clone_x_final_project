@@ -65,6 +65,7 @@ export default class TweetsController {
   public async showAllTweets({ view }: HttpContext) {
     const tweets = await Tweet.query()
       .preload('user', (query) => query.select(['id', 'name', 'pseudo', 'avatar']))
+      .preload('likes', (query) => query.select(['user_id']))
       .orderBy('created_at', 'desc')
 
     return view.render('pages/home_x', { tweets: tweets })

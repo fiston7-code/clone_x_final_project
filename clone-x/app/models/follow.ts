@@ -10,13 +10,17 @@ export default class Follow extends BaseModel {
   @column()
   declare followerId: number
 
-  @belongsTo(() => User)
+  @belongsTo(() => User, {
+    foreignKey: 'followerId',
+  })
   declare follower: BelongsTo<typeof User>
 
   @column()
   declare followingId: number
 
-  @belongsTo(() => User)
+  @belongsTo(() => User, {
+    foreignKey: 'followingId',
+  })
   declare following: BelongsTo<typeof User>
 
   @column.dateTime({ autoCreate: true })

@@ -1,10 +1,15 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { accoutValidation } from '#validators/data_validation'
 import User from '#models/user'
+import mail from '@adonisjs/mail/services/main'
 
 export default class AuthController {
   public async showRegister({ view }: HttpContext) {
     return view.render('pages/signUp')
+  }
+
+  public async showEmail({ view }: HttpContext) {
+    return view.render('pages/emailPage')
   }
 
   public async showLogin({ view }: HttpContext) {
@@ -34,5 +39,16 @@ export default class AuthController {
       })
       return response.redirect().back()
     }
+  }
+
+  public async email({ request }: HttpContext) {
+    const email = request.input('email')
+    await mail.send((message) => {
+      message
+        .from('fistonkalambayi7@gmail.com')
+        .to(email)
+        .subject('merci de confirmer votre email')
+        .html('bonjour')
+    })
   }
 }

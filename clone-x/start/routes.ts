@@ -17,6 +17,7 @@ const SessionController = () => import('#controllers/session_controller')
 const TweetsController = () => import('#controllers/tweets_controller')
 const LikesController = () => import('#controllers/likes_controller')
 const RetweetsController = () => import('#controllers/retweets_controller')
+const FollowsController = () => import('#controllers/follows_controller')
 
 // router.on('/').render('pages/home')
 
@@ -76,8 +77,45 @@ router
   .as('tweets.delete')
   .use(middleware.auth())
 
+//route follow
+
+router
+  .group(() => {
+    // GET /profil (Shows the currently logged-in user's profile)
+    router.get('profil', [FollowsController, 'showProfilPage']).as('profil.base')
+
+    // POST /users/:id/follow (Follow action)
+    router.post('users/:id/follow', [FollowsController, 'follow']).as('follow')
+
+    // POST /users/:id/unfollow (Unfollow action)
+    router.post('users/:id/unfollow', [FollowsController, 'unfollow']).as('unfollow')
+  })
+  .use(middleware.auth()) // Authentication applied to all routes in this group
+
+// MUST be placed AFTER the authenticated GET /profil to ensure /profil always hits the authenticated route.
+router
+  .get('profil/:id', [FollowsController, 'showProfilPage'])
+  .as('profil.show')
+  .use(middleware.auth())
+
+// GET /profil/:id/followers (Publicly viewable list)
+router
+  .get('profil/:id/followers', [FollowsController, 'showFollowers'])
+  .as('followers.show')
+  .use(middleware.auth())
+
+// GET /profil/:id/following (Publicly viewable list)
+router
+  .get('profil/:id/following', [FollowsController, 'showFollowing'])
+  .as('following.show')
+  .use(middleware.auth())
+
 // store and login users
 router.post('/register', [AuthController, 'storeUser']).as('store.user')
 router.post('/login', [SessionController, 'loginUser']).as('login.user')
 router.post('/logout', [SessionController, 'logoutUser']).as('logout')
 router.post('/postTweets', [TweetsController, 'storeTweet']).as('postTweet').use(middleware.auth())
+
+router.post('/send', '#controllers/authController.email')
+
+router.get('/sendEmail', [AuthController, 'showEmail']).as('email')

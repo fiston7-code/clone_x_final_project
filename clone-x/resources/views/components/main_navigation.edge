@@ -1,10 +1,25 @@
 <nav class="space-y-1 px-4">
-    @!navLink({ href: route(), icon: 'fa-solid fa-house', text: 'Accueil' })
+    @!navLink({ href: route('home.show'), icon: 'fa-solid fa-house', text: 'Accueil' })
     @!navLink({ href: route(), icon: 'fa-solid fa-magnifying-glass', text: 'Explorer' })
     @!navLink({ href: route(), icon: 'fa-solid fa-bell', text: 'Notifications' })
     @!navLink({ href: route(), icon: 'fa-regular fa-envelope', text: 'Messages' })
     @!navLink({ href: route(), icon: 'fa-solid fa-robot', text: 'Grok' })
     @!navLink({ href: route(), icon: 'fa-solid fa-people-arrows', text: 'Communautés' })
-    @!navLink({ href: route(), icon: 'fa-solid fa-user', text: 'profil' })
+
     @!navLink({ href: route(), icon: 'fa-solid fa-info', text: 'plus' })
+    @if(auth.user)
+    {{-- The 'profil.base' route doesn't require an ID parameter, resolving the error. --}}
+    @!navLink({
+    href: route('profil.base'),
+    icon: 'fa-solid fa-user',
+    text: 'Mon Profil'
+    })
+    @else
+    {{-- If not logged in, link to the login page --}}
+    @!navLink({
+    href: route('login.show'),
+    icon: 'fa-solid fa-user',
+    text: 'Se Connecter'
+    })
+    @endif
 </nav>

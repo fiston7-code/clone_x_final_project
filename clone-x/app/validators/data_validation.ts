@@ -21,3 +21,15 @@ export const tweetValidation = vine.compile(
       .nullable(),
   })
 )
+
+export const updateUserInfo = vine.compile(
+  vine.object({
+    name: vine.string().trim().minLength(3).maxLength(15).optional(),
+    pseudo: vine.string().trim().minLength(3).maxLength(15).optional(),
+    bio: vine.string().trim().minLength(3).maxLength(160).optional(), // facultatif mais utile
+
+    current_password: vine.string().trim().minLength(6).optional(), // pas toujours obligatoire
+
+    new_password: vine.string().trim().minLength(6).optional().requiredIfExists('current_password'), //  ne peut être présent que si current_password est fourni
+  })
+)

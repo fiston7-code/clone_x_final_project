@@ -30,7 +30,7 @@
             <form method="POST" action="{{route('postTweet')}}" enctype="multipart/form-data" class="space-y-4">
                 {{ csrfField() }}
                 <div class="flex space-x-3">
-                    <img src="" alt="avatar" class="w-12 h-12 rounded-full object-cover">
+                    <img src="{{user?.avatar }}" alt="avatar" class="w-12 h-12 rounded-full object-cover">
                     <textarea name="content" rows="2" placeholder="What's happening?"
                         class="w-full bg-transparent text-white placeholder-gray-500 focus:outline-none resize-none"></textarea>
                 </div>
@@ -58,14 +58,16 @@
             <div class="border-b border-gray-800 p-4 hover:bg-gray-950 transition">
                 <div class="flex space-x-3">
 
-                    <img src="/uploads/{{ tweet.user.avatar }}" alt="avatar"
-                        class="w-10 h-10 rounded-full object-cover">
+
+                    <a href="{{ route('profil.show', { id: tweet.user.id }) }}">
+                        <img src="{{ tweet.user.avatar }}" alt="avatar" class="w-10 h-10 rounded-full object-cover">
+                    </a>
+
+
+
                     <div class="flex-1">
                         <div class="flex justify-between space-x-2">
                             <div class="flex items-center gap-2">
-                                {{-- <p class="font-semibold text-white">{{ tweet.user.name}}</p>
-                                <span class="text-gray-500 text-sm">{{ tweet.user.pseudo }} · {{
-                                    tweet.createdAt.toRelative() }}</span> --}}
 
                                 <a href="{{ route('profil.show', { id: tweet.user.id }) }}"
                                     class="flex items-center gap-2">

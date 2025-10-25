@@ -17,7 +17,8 @@ const SessionController = () => import('#controllers/session_controller')
 const TweetsController = () => import('#controllers/tweets_controller')
 const LikesController = () => import('#controllers/likes_controller')
 const RetweetsController = () => import('#controllers/retweets_controller')
-const FollowsController = () => import('#controllers/follows_controller')
+const FollowsController = () => import('#controllers/profil_controller')
+const SearchesController = () => import('#controllers/searches_controller')
 
 // router.on('/').render('pages/home')
 
@@ -26,6 +27,11 @@ router.on('/').render('pages/welcome')
 router.get('/signUp', [AuthController, 'showRegister']).as('signUp.show')
 router.get('/login', [AuthController, 'showLogin']).as('login.show')
 router.get('/home', [TweetsController, 'showAllTweets']).as('home.show').use(middleware.auth())
+router.get('/search', [SearchesController, 'search']).as('search').use(middleware.auth())
+router
+  .post('/update', [FollowsController, 'updateUserInfo'])
+  .as('update.user')
+  .use(middleware.auth())
 
 // Route pour servir les uploads
 // =======================

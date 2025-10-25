@@ -34,7 +34,7 @@ export default class TweetsController {
       // 3. Gestion du fichier média
       if (media) {
         // Déplacer le fichier vers /storage/uploads
-        await media.move(app.makePath('storage/uploads'), {
+        await media.move(app.makePath('storage/uploads/tweets'), {
           name: `${cuid()}.${media.extname}`,
           overwrite: false,
         })

@@ -1,6 +1,9 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Follow from '#models/follow'
 import User from '#models/user'
+import { updateUserInfo } from '#validators/data_validation'
+import { cuid } from '@adonisjs/core/helpers'
+import app from '@adonisjs/core/services/app'
 
 export default class FollowsController {
   public async showProfilPage({ view, auth, params, response }: HttpContext) {
@@ -181,15 +184,6 @@ export default class FollowsController {
       return response.notFound('Profil utilisateur non trouvé')
     }
 
-    // recuperation des tweets du profil
-    // const tweets = await user
-    //   .related('tweets')
-    //   .query()
-    //   .preload('user')
-    //   .preload('likes')
-    //   .preload('replies')
-    //   .orderBy('created_at', 'desc')
-
     // calcul du nombre d'abonnements
 
     const followersCountResult = await Follow.query()
@@ -231,5 +225,64 @@ export default class FollowsController {
       isFollowed: !!isFollowed,
       // Note: On ne passe pas 'followers' car cet onglet affiche 'following'
     })
+  }
+
+  public async updateUserInfo({ request, response, auth, session }: HttpContext) {
+    const user = auth.user!
+
+    //  Validation du formulaire
+    const payload = await request.validateUsing(updateUserInfo)
+
+    try {
+      //  Vérification / changement du mot de passe
+      if (payload.current_password && payload.new_password) {
+        try {
+          await User.verifyCredentials(user.email, payload.current_password)
+        } catch {
+          session.flash('errors.current_password', ['Le mot de passe actuel est incorrect.'])
+          session.flashExcept(['current_password', 'new_password'])
+          return response.redirect().back()
+        }
+        user.password = payload.new_password
+      }
+
+      //  Mise à jour des autres infos utilisateur
+      if (payload.name) user.name = payload.name
+      if (payload.pseudo) user.pseudo = payload.pseudo
+      if (payload.bio) user.bio = payload.bio
+
+      // Gestion d’un nouvel avatar (upload)
+      const avatar = request.file('avatar', {
+        size: '2mb',
+        extnames: ['jpg', 'png', 'jpeg'],
+      })
+
+      if (avatar) {
+        if (!avatar.isValid) {
+          return response.badRequest({ errors: avatar.errors })
+        }
+
+        await avatar.move(app.makePath('storage/uploads/avatars'), {
+          name: `${cuid()}.${avatar.extname}`,
+          overwrite: false,
+        })
+
+        if (!avatar.fileName) {
+          throw new Error('Erreur lors du déplacement du fichier média')
+        }
+
+        user.avatar = `uploads/${avatar.fileName}`
+      }
+
+      //  Sauvegarde
+      await user.save()
+
+      session.flash('success', 'Profil mis à jour avec succès ✅')
+      return response.redirect().back()
+    } catch (error) {
+      console.error(error)
+      session.flash('error', 'Une erreur est survenue lors de la mise à jour.')
+      return response.redirect().back()
+    }
   }
 }

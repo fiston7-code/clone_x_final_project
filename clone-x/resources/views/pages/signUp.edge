@@ -12,8 +12,7 @@
 
         <!-- Logo -->
         <div class="flex justify-center mb-4 ">
-            <i class="fa-brands fa-x-twitter "></i
-            >
+            <img src="/twitter.png" alt="logo" class="w-8 h-8">
         </div>
 
         <!-- Titre -->
@@ -63,10 +62,10 @@
 
             })
 
-             @!component('components/button', { text: 'S’inscrire' })
+            @!component('components/button', { text: 'S’inscrire' })
         </form>
 
-         <!-- Flash message d'erreur -->
+        <!-- Flash message d'erreur -->
         @if(flashMessages.has('error'))
         <p class="bg-red-100 text-red-700 p-3 rounded-md mt-4">
             {{ flashMessages.get('error') }}

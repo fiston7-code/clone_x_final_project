@@ -2,6 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import { accoutValidation } from '#validators/data_validation'
 import User from '#models/user'
 import mail from '@adonisjs/mail/services/main'
+import { cuid } from '@adonisjs/core/helpers'
 
 export default class AuthController {
   public async showRegister({ view }: HttpContext) {
@@ -25,30 +26,37 @@ export default class AuthController {
     try {
       const { name, pseudo, email, password } = await request.validateUsing(accoutValidation)
 
-      await User.create({
-        name: name,
+      // Génération du token de vérification
+      const token = cuid()
+
+      // Création de l'utilisateur
+      const user = await User.create({
+        name,
         pseudo,
         email,
         password,
+        verificationToken: token,
+        isVerified: false,
       })
 
+      // Envoi du mail de confirmation
+      await mail.send((message) => {
+        message.from('fistonkalambayi7@gmail.com').to(email).subject('Confirmez votre email').html(`
+          Bonjour ${name},<br><br>
+          Cliquez sur ce lien pour activer votre compte : 
+          <a href="http://localhost:3333/verify/${token}">Confirmer mon email</a>
+        `)
+      })
+
+      session.flash({
+        success: 'Un email de confirmation a été envoyé. Vérifiez votre boîte mail.',
+      })
       return response.redirect().toRoute('login.show')
     } catch (error) {
       session.flash({
-        error: "assurez vous d'avoir saisie au moins 6 character pour le mot de passe",
+        error: "Assurez-vous d'avoir saisi au moins 6 caractères pour le mot de passe",
       })
       return response.redirect().back()
     }
-  }
-
-  public async email({ request }: HttpContext) {
-    const email = request.input('email')
-    await mail.send((message) => {
-      message
-        .from('fistonkalambayi7@gmail.com')
-        .to(email)
-        .subject('merci de confirmer votre email')
-        .html('bonjour')
-    })
   }
 }

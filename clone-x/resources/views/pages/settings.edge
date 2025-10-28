@@ -1,0 +1,39 @@
+@layout.auth( { title: 'Confidentialité / X' })
+@slot('meta')
+<meta name="description" content="Connectez-vous à X - Rejoignez la conversation.">
+@endslot
+
+@slot('main')
+<div class="min-h-screen bg-black text-white flex justify-center items-center">
+    <div class="bg-gray-900 p-6 rounded-2xl shadow-md w-full max-w-md">
+        <h1 class="text-2xl font-bold mb-4 text-center">Paramètres de confidentialité</h1>
+
+        <p class="text-gray-400 mb-6 text-center">
+            Statut actuel :
+            <span class="text-blue-400 font-semibold">
+                {{ user.isPrivate ? 'Privé 🔒' : 'Public 🌍' }}
+            </span>
+        </p>
+
+        <div class="flex justify-center gap-4">
+            @if(user.isPrivate)
+            <form method="POST" action="{{ route('privacy.public') }}">
+                {{ csrfField() }}
+                <button type="submit"
+                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium">
+                    Rendre public
+                </button>
+            </form>
+            @else
+            <form method="POST" action="{{ route('privacy.private') }}">
+                {{ csrfField() }}
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">
+                    Rendre privé
+                </button>
+            </form>
+            @endif
+        </div>
+    </div>
+</div>
+@endslot
+@end

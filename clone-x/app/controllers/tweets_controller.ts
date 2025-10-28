@@ -2,6 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import Tweet from '#models/tweet'
 import { tweetValidation } from '#validators/data_validation'
 import User from '#models/user'
+import Block from '#models/block'
 import { cuid } from '@adonisjs/core/helpers'
 import app from '@adonisjs/core/services/app'
 
@@ -98,8 +99,27 @@ export default class TweetsController {
 
   // affichage de tous les tweets
 
-  public async showAllTweets({ view }: HttpContext) {
+  public async showAllTweets({ view, auth }: HttpContext) {
+    const currentUserId = auth.user?.id
+    let blockedUserIds: number[] = []
+
+    // 🧱 Étape 1 : récupérer tous les utilisateurs bloqués (dans les deux sens)
+    if (currentUserId) {
+      const blocks = await Block.query()
+        .where('blocker_id', currentUserId)
+        .orWhere('blocked_id', currentUserId)
+
+      blockedUserIds = blocks.map((b) =>
+        b.blockerId === currentUserId ? b.blockedId : b.blockerId
+      )
+    }
+
+    // 🐦 Étape 2 : récupérer tous les tweets sauf ceux des utilisateurs bloqués
     const tweets = await Tweet.query()
+      .whereNull('parent_id')
+      .if(blockedUserIds.length > 0, (query) => {
+        query.whereNotIn('user_id', blockedUserIds)
+      })
       .preload('user', (query) => query.select(['id', 'name', 'pseudo', 'avatar']))
       .preload('likes', (query) => query.select(['user_id']))
       .preload('replies', (query) =>
@@ -108,9 +128,9 @@ export default class TweetsController {
           .preload('likes', (query) => query.select(['user_id']))
           .select(['id', 'content', 'user_id', 'parent_id', 'created_at'])
       )
-      .whereNull('parent_id')
       .orderBy('created_at', 'desc')
 
-    return view.render('pages/home_x', { tweets: tweets })
+    // 🧭 Étape 3 : afficher la page avec les tweets filtrés
+    return view.render('pages/home_x', { tweets })
   }
 }

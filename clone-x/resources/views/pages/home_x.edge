@@ -30,7 +30,8 @@
             <form method="POST" action="{{route('postTweet')}}" enctype="multipart/form-data" class="space-y-4">
                 {{ csrfField() }}
                 <div class="flex space-x-3">
-                    <img src="{{user?.avatar }}" alt="avatar" class="w-12 h-12 rounded-full object-cover">
+                    <img src="{{ user?.avatar ? '/uploads/avatars/' + (user.avatar.split('/').pop()) : '/uploads/default-avatar.png' }}"
+                        alt="avatar" class="w-12 h-12 rounded-full object-cover">
                     <textarea name="content" rows="2" placeholder="What's happening?"
                         class="w-full bg-transparent text-white placeholder-gray-500 focus:outline-none resize-none"></textarea>
                 </div>
@@ -52,6 +53,36 @@
                 </div>
             </form>
         </div>
+
+
+        @if(query && users && users.length > 0)
+        <div class="p-4 border-b border-gray-800">
+            <h2 class="text-xl font-bold text-white mb-4">Comptes Trouvés ({{ users.length }})</h2>
+
+            @each(userResult in users)
+            {{-- Afficher chaque utilisateur trouvé --}}
+            <a href="{{ route('profil.show', { id: userResult.id }) }}"
+                class="flex items-center gap-3 p-3 hover:bg-gray-900 rounded-lg transition">
+                <img src="{{ userResult.avatar || '/uploads/default-avatar.png' }}" alt="Avatar"
+                    class="w-12 h-12 rounded-full object-cover">
+                <div>
+                    <p class="font-semibold text-white">{{ userResult.name }}</p>
+                    <p class="text-gray-500">{{ userResult.pseudo }}</p>
+                    @if(userResult.bio)
+                    <p class="text-gray-400 text-sm mt-1 line-clamp-1">{{ userResult.bio }}</p>
+                    @endif
+                </div>
+            </a>
+            @endeach
+        </div>
+        @endif
+
+        @if(query && users && users.length === 0 && tweets && tweets.length === 0)
+        <div class="p-8 text-center text-gray-400">
+            <p class="text-lg mb-2">Aucun résultat trouvé pour "{{ query }}".</p>
+            <p class="text-sm">Essayez une recherche différente.</p>
+        </div>
+        @endif
         <!-- Liste des tweets -->
         <div id="tweetList">
             @each(tweet in tweets)
@@ -113,72 +144,72 @@
                         <!-- Afficher le média si présent -->
                         @if(tweet.mediaUrl)
                         <div class="mt-2">
-                            <img src="{{ '/' + tweet.mediaUrl }}" alt="media"
+                            <img src="/uploads/tweets/{{ tweet.mediaUrl.split('/').pop() }}" alt="media"
                                 class="w-full rounded-lg object-cover max-h-85">
-                        </div>
-                        @endif
-                        <div class="flex justify-between text-gray-500 text-sm mt-3 max-w-xs">
-                            <button type="button"
-                                onclick="document.getElementById('reply-modal-{{ tweet.id }}').showModal()"
-                                class="hover:text-blue-400">
-                                <i class="fa-regular fa-comment"></i>
-                            </button>
-                            <!-- Modal réponse -->
-                            <dialog id="reply-modal-{{ tweet.id }}" class="p-6 rounded-xl bg-white text-white max-w-md">
-                                <form action="{{ route('tweets.reply', { id: tweet.id }) }}" method="POST">
-                                    {{ csrfField() }}
-                                    <p class="mb-2 text-sm text-gray-400">Répondre à {{ tweet.user.name }}</p>
-                                    <textarea name="content"
-                                        class="w-full p-3 rounded-lg bg-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        rows="3" placeholder="Écrivez votre réponse..."></textarea>
-                                    <div class="flex flex-col justify-center mt-4 gap-2">
-                                        <div class="mb-4">
-                                            <button type="button" onclick="this.closest('dialog').close()"
-                                                class="px-3 py-1 text-gray-400 hover:text-blue-500">
-                                                Annuler
-                                            </button>
-                                            <button type="submit"
-                                                class="px-4 py-1 bg-blue-500 rounded-lg hover:bg-blue-600">
-                                                Répondre
-                                            </button>
-                                        </div>
-                                        <div>
-                                            @if(tweet.replies && tweet.replies.length)
-                                            <div class="space-y-2">
-                                                @each(reply in tweet.replies)
-                                                <div>
-                                                    <p class="text-sm text-gray-400">{{ reply.user.name }} — {{
-                                                        reply.createdAt.toRelative() }} </p>
-                                                    <p class="text-black">{{ reply.content }}</p>
-                                                </div>
-                                                @endeach
+                            @endif
+                            <div class="flex justify-between text-gray-500 text-sm mt-3 max-w-xs">
+                                <button type="button"
+                                    onclick="document.getElementById('reply-modal-{{ tweet.id }}').showModal()"
+                                    class="hover:text-blue-400">
+                                    <i class="fa-regular fa-comment"></i>
+                                </button>
+                                <!-- Modal réponse -->
+                                <dialog id="reply-modal-{{ tweet.id }}"
+                                    class="p-6 rounded-xl bg-white text-white max-w-md">
+                                    <form action="{{ route('tweets.reply', { id: tweet.id }) }}" method="POST">
+                                        {{ csrfField() }}
+                                        <p class="mb-2 text-sm text-gray-400">Répondre à {{ tweet.user.name }}</p>
+                                        <textarea name="content"
+                                            class="w-full p-3 rounded-lg bg-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            rows="3" placeholder="Écrivez votre réponse..."></textarea>
+                                        <div class="flex flex-col justify-center mt-4 gap-2">
+                                            <div class="mb-4">
+                                                <button type="button" onclick="this.closest('dialog').close()"
+                                                    class="px-3 py-1 text-gray-400 hover:text-blue-500">
+                                                    Annuler
+                                                </button>
+                                                <button type="submit"
+                                                    class="px-4 py-1 bg-blue-500 rounded-lg hover:bg-blue-600">
+                                                    Répondre
+                                                </button>
                                             </div>
-                                            @endif
+                                            <div>
+                                                @if(tweet.replies && tweet.replies.length)
+                                                <div class="space-y-2">
+                                                    @each(reply in tweet.replies)
+                                                    <div>
+                                                        <p class="text-sm text-gray-400">{{ reply.user.name }} — {{
+                                                            reply.createdAt.toRelative() }} </p>
+                                                        <p class="text-black">{{ reply.content }}</p>
+                                                    </div>
+                                                    @endeach
+                                                </div>
+                                                @endif
+                                            </div>
                                         </div>
-                                    </div>
+                                    </form>
+                                </dialog>
+                                <!-- Retweet simple -->
+                                <form action="{{ route('tweet.retweet', { id: tweet.id }) }}" method="POST">
+                                    {{ csrfField() }}
+                                    <button type="submit" class="hover:text-green-400">
+                                        <i class="fa-solid fa-retweet"></i> {{ tweet.replies.length }}
+                                    </button>
                                 </form>
-                            </dialog>
-                            <!-- Retweet simple -->
-                            <form action="{{ route('tweet.retweet', { id: tweet.id }) }}" method="POST">
-                                {{ csrfField() }}
-                                <button type="submit" class="hover:text-green-400">
-                                    <i class="fa-solid fa-retweet"></i> {{ tweet.replies.length }}
-                                </button>
-                            </form>
-                            {{-- like --}}
-                            <form action="{{ route('tweets.like', { id: tweet.id }) }}" method="POST">
-                                {{ csrfField() }}
-                                <button class="flex items-center space-x-1 hover:text-pink-500">
-                                    <i class="fa-regular fa-heart"></i>
-                                    <span class="text-pink-500">{{ tweet.likes.length }}</span>
-                                </button>
-                            </form>
+                                {{-- like --}}
+                                <form action="{{ route('tweets.like', { id: tweet.id }) }}" method="POST">
+                                    {{ csrfField() }}
+                                    <button class="flex items-center space-x-1 hover:text-pink-500">
+                                        <i class="fa-regular fa-heart"></i>
+                                        <span class="text-pink-500">{{ tweet.likes.length }}</span>
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
+                @end
             </div>
-            @end
-        </div>
     </main>
     @!component('components/side_bar_rigth')
 </div>

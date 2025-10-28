@@ -19,6 +19,8 @@ const LikesController = () => import('#controllers/likes_controller')
 const RetweetsController = () => import('#controllers/retweets_controller')
 const FollowsController = () => import('#controllers/profil_controller')
 const SearchesController = () => import('#controllers/searches_controller')
+const RequestsController = () => import('#controllers/requests_controller')
+const BlocksController = () => import('#controllers/blocks_controller')
 
 // router.on('/').render('pages/home')
 
@@ -32,6 +34,12 @@ router
   .post('/update', [FollowsController, 'updateUserInfo'])
   .as('update.user')
   .use(middleware.auth())
+
+// routes auth with google
+
+// OAuth Google
+router.get('/auth/google/redirect', [SessionController, 'redirectToGoogle'])
+router.get('/auth/google/callback', [SessionController, 'handleGoogleCallback'])
 
 // Route pour servir les uploads
 // =======================
@@ -97,6 +105,39 @@ router
     router.post('users/:id/unfollow', [FollowsController, 'unfollow']).as('unfollow')
   })
   .use(middleware.auth()) // Authentication applied to all routes in this group
+
+router
+  .get('/privacy', [RequestsController, 'showSettings'])
+  .as('privacy.settings')
+  .use(middleware.auth())
+router
+  .post('/privacy/private', [RequestsController, 'makePrivate'])
+  .as('privacy.private')
+  .use(middleware.auth())
+router
+  .post('/privacy/public', [RequestsController, 'makePublic'])
+  .as('privacy.public')
+  .use(middleware.auth())
+
+// les routes pour le bloquage
+
+// Assurez-vous d'appliquer le middleware d'authentification
+
+//  Route pour bloquer un utilisateur
+router.post('/users/:id/block', [BlocksController, 'block']).as('user.block').use(middleware.auth())
+
+// 🔓 Route pour débloquer un utilisateur
+// Utiliser POST simplifie souvent les formulaires, mais DELETE est plus sémantique pour une suppression
+router
+  .post('/users/:id/unblock', [BlocksController, 'unblock'])
+  .as('user.unblock')
+  .use(middleware.auth())
+
+// 📝 Route pour afficher la liste des utilisateurs bloqués
+router
+  .get('/settings/blocked', [BlocksController, 'index'])
+  .as('user.blocked.index')
+  .use(middleware.auth())
 
 // MUST be placed AFTER the authenticated GET /profil to ensure /profil always hits the authenticated route.
 router

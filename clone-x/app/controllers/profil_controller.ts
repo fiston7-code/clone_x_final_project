@@ -1,62 +1,81 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Follow from '#models/follow'
 import User from '#models/user'
+import Block from '#models/block'
 import { updateUserInfo } from '#validators/data_validation'
 import { cuid } from '@adonisjs/core/helpers'
 import app from '@adonisjs/core/services/app'
 
 export default class FollowsController {
   public async showProfilPage({ view, auth, params, response }: HttpContext) {
-    const userIdFromParams = Number(params.id) // L'ID dans l'URL (si présent)
+    const userIdFromParams = Number(params.id)
     const currentUserId = auth.user?.id
-
-    // Déterminer l'ID du profil à afficher : ID dans l'URL, sinon ID de l'utilisateur connecté
     const targetUserId = userIdFromParams || currentUserId
 
-    if (!targetUserId) {
-      // Si l'utilisateur n'est pas connecté ET qu'aucun ID n'est passé en paramètre
-      return response.unauthorized('Vous devez vous connecter pour voir cette page.')
+    if (!currentUserId) {
+      return response.unauthorized('Vous devez être connecté pour voir cette page.')
     }
 
+    if (!targetUserId) {
+      return response.badRequest('Utilisateur cible invalide.')
+    }
+
+    // Vérifie si le profil t’a bloqué
+    // const isBlockedByTarget = await Block.query()
+    //   .where('blocker_id', targetUserId)
+    //   .andWhere('blocked_id', currentUserId)
+    //   .first()
+
+    // if (isBlockedByTarget) {
+    //   // Si le profil t’a bloqué → accès interdit
+    //   return response.forbidden('Ce profil est indisponible.')
+    // }
+
+    // Vérifie si tu as bloqué le profil
+    const hasBlocked = await Block.query()
+      .where('blocker_id', currentUserId)
+      .andWhere('blocked_id', targetUserId)
+      .first()
+
     try {
-      // 1. Récupérer l'utilisateur cible
+      //  Récupère les infos du profil
       const user = await User.query()
         .where('id', targetUserId)
         .preload('tweets', (tweetQuery) => {
-          tweetQuery.preload('user')
-          tweetQuery.orderBy('createdAt', 'desc')
+          tweetQuery.preload('user').orderBy('createdAt', 'desc')
         })
         .firstOrFail()
 
-      // 2. Calcul des compteurs (Réutilisé dans toutes les vues de profil)
-      const followersCountResult = await Follow.query()
-        .where('following_id', targetUserId)
-        .count('* as total')
-      const followingCountResult = await Follow.query()
-        .where('follower_id', targetUserId)
-        .count('* as total')
-      const followersCount = Number(followersCountResult[0].$extras.total)
-      const followingCount = Number(followingCountResult[0].$extras.total)
+      // Comptage des followers / following
+      const followersCount = Number(
+        (await Follow.query().where('following_id', targetUserId).count('* as total'))[0].$extras
+          .total
+      )
+      const followingCount = Number(
+        (await Follow.query().where('follower_id', targetUserId).count('* as total'))[0].$extras
+          .total
+      )
 
-      // 3. Vérification si l’utilisateur connecté suit le profil cible (seulement si l'utilisateur est connecté)
+      // Vérifie si l’utilisateur connecté suit déjà le profil
       const isFollowed =
-        currentUserId && currentUserId !== targetUserId
+        currentUserId !== targetUserId
           ? await Follow.query()
               .where('follower_id', currentUserId)
               .where('following_id', targetUserId)
               .first()
           : false
 
-      // 4. Rendu de la vue pour l'onglet 'tweets'
+      // Rendu de la vue
       return view.render('pages/profil', {
         user,
-        tweets: user.tweets, // Modèles non sérialisés pour `toRelative()`
+        tweets: user.tweets,
         followersCount,
         followingCount,
-        isFollowed: !!isFollowed, // Convertir en booléen
+        isFollowed: !!isFollowed,
         currentTab: 'tweets',
-        followers: [], // Passé vide
-        following: [], // Passé vide
+        followers: [],
+        following: [],
+        blocked: !!hasBlocked, //  on passe ici la donnée pour le bouton
       })
     } catch (error) {
       console.error('Error fetching profile:', error)
@@ -277,7 +296,7 @@ export default class FollowsController {
       //  Sauvegarde
       await user.save()
 
-      session.flash('success', 'Profil mis à jour avec succès ✅')
+      session.flash('success', 'Profil mis à jour avec succès')
       return response.redirect().back()
     } catch (error) {
       console.error(error)

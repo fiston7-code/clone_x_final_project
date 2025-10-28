@@ -25,7 +25,8 @@
         <div class="relative">
             <img src="{{ user?.banner_url || '/uploads/default-banner.jpg' }}" alt="Bannière"
                 class="w-full h-48 object-cover">
-            <img src="{{ user?.avatar || '/uploads/default-avatar.png' }}" alt="{{ user?.name }}"
+            <img src="{{ user?.avatar ? '/uploads/avatars/' + (user.avatar.split('/').pop()) : '/uploads/default-avatar.png' }}"
+                alt="{{ user?.name }}"
                 class="w-24 h-24 rounded-full border-4 border-black absolute -bottom-12 left-6 object-cover">
         </div>
         <div class="p-4 mt-12 flex justify-between items-center">
@@ -44,6 +45,25 @@
                 </button>
             </form>
             @endif
+
+            @if(blocked)
+            <form method="POST" action="{{ route('user.unblock', { id: user.id }) }}">
+                {{ csrfField() }}
+                <button type="submit" class="text-red-500 hover:text-red-400">
+                    Débloquer
+                </button>
+            </form>
+            @else
+            <form method="POST" action="{{ route('user.block', { id: user.id }) }}">
+                {{ csrfField() }}
+                <button type="submit" class="text-red-500 hover:text-red-400">
+                    Bloquer
+                </button>
+            </form>
+            @endif
+
+
+
 
             @if(auth.user && auth.user.id === user.id)
             <button onclick="document.getElementById('edit-modal').showModal()"
@@ -142,8 +162,8 @@
             @each(tweet in tweets)
             <div class="border-b border-gray-800 p-4 hover:bg-gray-950 transition">
                 <div class="flex space-x-3">
-                    <img src="/uploads/{{ tweet.user.avatar }}" alt="avatar"
-                        class="w-10 h-10 rounded-full object-cover">
+                    <img src="{{ tweet.user.avatar ? '/uploads/avatars/' + (tweet.user.avatar.split('/').pop()) : '/uploads/default-avatar.png' }}"
+                        alt="avatar" class="w-10 h-10 rounded-full object-cover">
                     <div class="flex-1">
                         <div class="flex justify-between space-x-2">
                             <div class="flex items-center gap-2">
@@ -188,44 +208,44 @@
 
                         @if(tweet.mediaUrl)
                         <div class="mt-2">
-                            <img src="{{ '/' + tweet.mediaUrl }}" alt="media"
+                            <img src="/uploads/tweets/{{ tweet.mediaUrl.split('/').pop() }}" alt="media"
                                 class="w-full rounded-lg object-cover max-h-85">
+                            @endif
+
                         </div>
-                        @endif
-                    </div>
-                </div>
-            </div>
-            @endeach
-
-            @elseif(currentTab === 'followers')
-            <div class="divide-y divide-gray-800">
-                @each(follower in followers)
-                <div class="p-4 flex items-center gap-3 hover:bg-gray-900">
-                    <img src="{{ follower.avatar_url || '/uploads/default-avatar.png' }}"
-                        class="w-10 h-10 rounded-full object-cover">
-                    <div>
-                        <p class="font-bold">{{ follower.name }}</p>
-                        <p class="text-gray-500 text-sm">{{ follower.pseudo }}</p>
                     </div>
                 </div>
                 @endeach
-            </div>
 
-            @elseif(currentTab === 'following')
-            <div class="divide-y divide-gray-800">
-                @each(person in following)
-                <div class="p-4 flex items-center gap-3 hover:bg-gray-900">
-                    <img src="{{ person.avatar_url || '/uploads/default-avatar.png' }}"
-                        class="w-10 h-10 rounded-full object-cover">
-                    <div>
-                        <p class="font-bold">{{ person.name }}</p>
-                        <p class="text-gray-500 text-sm">{{ person.pseudo }}</p>
+                @elseif(currentTab === 'followers')
+                <div class="divide-y divide-gray-800">
+                    @each(follower in followers)
+                    <div class="p-4 flex items-center gap-3 hover:bg-gray-900">
+                        <img src="{{ follower.avatar_url || '/uploads/default-avatar.png' }}"
+                            class="w-10 h-10 rounded-full object-cover">
+                        <div>
+                            <p class="font-bold">{{ follower.name }}</p>
+                            <p class="text-gray-500 text-sm">{{ follower.pseudo }}</p>
+                        </div>
                     </div>
+                    @endeach
                 </div>
-                @endeach
+
+                @elseif(currentTab === 'following')
+                <div class="divide-y divide-gray-800">
+                    @each(person in following)
+                    <div class="p-4 flex items-center gap-3 hover:bg-gray-900">
+                        <img src="{{ person.avatar_url || '/uploads/default-avatar.png' }}"
+                            class="w-10 h-10 rounded-full object-cover">
+                        <div>
+                            <p class="font-bold">{{ person.name }}</p>
+                            <p class="text-gray-500 text-sm">{{ person.pseudo }}</p>
+                        </div>
+                    </div>
+                    @endeach
+                </div>
+                @endif
             </div>
-            @endif
-        </div>
     </main>
 
     @!component('components/side_bar_rigth')

@@ -6,7 +6,7 @@
     @!navLink({ href: route(), icon: 'fa-solid fa-robot', text: 'Grok' })
     @!navLink({ href: route(), icon: 'fa-solid fa-people-arrows', text: 'Communautés' })
 
-    @!navLink({ href: route(), icon: 'fa-solid fa-info', text: 'plus' })
+    @!navLink({ href: route('privacy.settings'), icon: 'fa-solid fa-info', text: 'plus' })
     @if(auth.user)
     {{-- The 'profil.base' route doesn't require an ID parameter, resolving the error. --}}
     @!navLink({

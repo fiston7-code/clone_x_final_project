@@ -20,8 +20,9 @@ export default class SearchesController {
 
     // 2️⃣ Recherche des utilisateurs
     const users = await User.query()
-      .whereILike('name', searchTerm)
-      .orWhereILike('pseudo', searchTerm)
+      .where((q) => {
+        q.whereILike('name', searchTerm).orWhereILike('pseudo', searchTerm)
+      })
       .limit(10)
       .select(['id', 'name', 'pseudo', 'avatar', 'bio'])
 

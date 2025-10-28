@@ -22,4 +22,12 @@ export default await Env.create(new URL('../', import.meta.url), {
   SMTP_PORT: Env.schema.number(),
   SMTP_USERNAME: Env.schema.string(),
   SMTP_PASSWORD: Env.schema.string(),
+
+  /*
+  |----------------------------------------------------------
+  | Variables for configuring ally package
+  |----------------------------------------------------------
+  */
+  GOOGLE_CLIENT_ID: Env.schema.string(),
+  GOOGLE_CLIENT_SECRET: Env.schema.string()
 })

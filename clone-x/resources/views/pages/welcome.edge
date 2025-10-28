@@ -5,24 +5,23 @@
 @endslot
 
 {{-- <div class="image-container">
-    <img src="sl_z_072523_61700_01.jpg" alt="the logo of X" class="img" />
+  <img src="sl_z_072523_61700_01.jpg" alt="the logo of X" class="img" />
 </div> --}}
 @slot('main')
 
 
-  <main class="bg-black text-[#fff] flex flex-col lg:flex-row lg:mb-32
+<main class="bg-black text-[#fff] flex flex-col lg:flex-row lg:mb-32
     text-center w-full min-h-screen lg:px-24 lg:py-16 items-center justify-center">
 
-    <!-- Left section (Logo) -->
-    <div class="flex-1 flex items-center justify-center p-6">
-      <svg viewBox="0 0 24 24" aria-hidden="true" class="w-24 md:w-2/3 fill-white">
-        <path d="M18.244 2H21.5l-7.63 8.72L22 22h-6.79l-5.34-6.57L4.02 22H.75l8.19-9.37L2 2h6.92l4.83 5.89L18.24 2z"></path>
-      </svg>
-    </div>
+  <!-- Left section (Logo) -->
+  <div class="flex-1 flex items-center justify-center p-6 text-white">
+    <img src="/twitter.png" alt="logo X" class="w-58 h-58">
 
-    <!-- Right section (Content) -->
-    <div class="w-full md:w-1/2 flex justify-center items-center gap-4">
-        <div class="p-4 md:max-w-sm w-full text-center max-w-md mx-auto">
+  </div>
+
+  <!-- Right section (Content) -->
+  <div class="w-full md:w-1/2 flex justify-center items-center gap-4">
+    <div class="p-4 md:max-w-sm w-full text-center max-w-md mx-auto">
       <h1 class="text-4xl sm:text-5xl font-extrabold leading-tight">
         Ça se passe maintenant
       </h1>
@@ -30,15 +29,18 @@
 
       <div class="space-y-3 mt-6">
         <!-- Google Button -->
-        <button class="flex items-center justify-center  w-full bg-white text-black font-semibold py-2 rounded-full hover:bg-gray-200 transition">
+        <button
+          class="flex items-center justify-center  w-full bg-white text-black font-semibold py-2 rounded-full hover:bg-gray-200 transition">
           <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="w-5 h-5 mr-2" />
           Sign up with Google
         </button>
 
         <!-- Apple Button -->
-        <button class="flex items-center justify-center w-full bg-white text-black font-semibold py-2 rounded-full hover:bg-gray-200 transition">
+        <button
+          class="flex items-center justify-center w-full bg-white text-black font-semibold py-2 rounded-full hover:bg-gray-200 transition">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" class="w-5 h-5 mr-2 fill-black">
-            <path d="M318.7 268.7c-.2-37.7 16.4-66.2 50-87.2-18.9-27.3-47.4-42.3-84.7-45.2-35.5-2.8-74.2 20.7-88.3 20.7-14.7 0-49.5-19.7-76.6-19.7C72.3 137.3 0 184.8 0 290.5c0 28.6 5.4 57.4 16.1 86.3C31 420.3 80.4 512 135.7 510.3c25.3-.6 43.1-18.1 75.8-18.1 32.3 0 48.9 18.1 76.5 18.1 55.8-1 101.6-83.7 116.5-133.6-74.4-35.2-85.8-103.6-85.8-108zM251.7 90.5C275.2 61.2 272 33.7 271.5 32c-25.7 1.5-55.5 17-73.3 38.3-16.1 19-28.8 45.6-25.1 72.1 27.8 2.1 53.3-13.7 78.6-51.9z" />
+            <path
+              d="M318.7 268.7c-.2-37.7 16.4-66.2 50-87.2-18.9-27.3-47.4-42.3-84.7-45.2-35.5-2.8-74.2 20.7-88.3 20.7-14.7 0-49.5-19.7-76.6-19.7C72.3 137.3 0 184.8 0 290.5c0 28.6 5.4 57.4 16.1 86.3C31 420.3 80.4 512 135.7 510.3c25.3-.6 43.1-18.1 75.8-18.1 32.3 0 48.9 18.1 76.5 18.1 55.8-1 101.6-83.7 116.5-133.6-74.4-35.2-85.8-103.6-85.8-108zM251.7 90.5C275.2 61.2 272 33.7 271.5 32c-25.7 1.5-55.5 17-73.3 38.3-16.1 19-28.8 45.6-25.1 72.1 27.8 2.1 53.3-13.7 78.6-51.9z" />
           </svg>
           Sign up with Apple
         </button>
@@ -51,13 +53,15 @@
         </div>
 
         <!-- Create Account -->
-         <a href=" {{route('signUp.show')}} " class="w-full bg-[#1D9BF0] block text-white font-bold py-2 rounded-full hover:bg-[#1A8CD8] transition">Créer un compte </a> 
-          
-          
-        
+        <a href=" {{route('signUp.show')}} "
+          class="w-full bg-[#1D9BF0] block text-white font-bold py-2 rounded-full hover:bg-[#1A8CD8] transition">Créer
+          un compte </a>
+
+
+
 
         <p class="text-xs text-gray-500 mt-2">
-          En vous inscrivant, vous acceptez les Conditions d'utilisation et la 
+          En vous inscrivant, vous acceptez les Conditions d'utilisation et la
           <a href="#" class="text-[#1D9BF0] hover:underline">Politique de confidentialité</a>notamment
           <a href="#" class="text-[#1D9BF0] hover:underline"> l'Utilisation des cookies</a>.
         </p>
@@ -66,68 +70,70 @@
       <div class="mt-10">
         <p class="text-gray-400 text-sm sm:text-base">
           Vous avez déjà un compte?
-          <a href=" {{route('login.show')}}" class="bg-transparent border w-full border-gray-700  block text-white font-bold py-2 rounded-full hover:bg-[#fff] hover:text-black transition">Se connecter</a>
+          <a href=" {{route('login.show')}}"
+            class="bg-transparent border w-full border-gray-700  block text-white font-bold py-2 rounded-full hover:bg-[#fff] hover:text-black transition">Se
+            connecter</a>
         </p>
       </div>
-       </div>
     </div>
-    </main>
+  </div>
+</main>
 
 <footer class="text-center p-4 text-gray-600">
-    <div class="text-sm flex flex-wrap justify-center gap-x-4 gap-y-2 mb-3">
-        <a href="">à Propos</a>
-        <div class="w-px h-4 bg-gray-600"></div>
+  <div class="text-sm flex flex-wrap justify-center gap-x-4 gap-y-2 mb-3">
+    <a href="">à Propos</a>
+    <div class="w-px h-4 bg-gray-600"></div>
 
-        <a href="">Télecharger l'application X</a>
-        <div class="w-px h-4 bg-gray-600"></div>
+    <a href="">Télecharger l'application X</a>
+    <div class="w-px h-4 bg-gray-600"></div>
 
-        <a href="">Grok</a>
-        <div class="w-px h-4 bg-gray-600"></div>
+    <a href="">Grok</a>
+    <div class="w-px h-4 bg-gray-600"></div>
 
-        <a href="">Centre d'assistance</a>
-        <div class="w-px h-4 bg-gray-600"></div>
+    <a href="">Centre d'assistance</a>
+    <div class="w-px h-4 bg-gray-600"></div>
 
-        <a href="">Condition d'utilisation</a>
-        <div class="w-px h-4 bg-gray-600"></div>
+    <a href="">Condition d'utilisation</a>
+    <div class="w-px h-4 bg-gray-600"></div>
 
-        <a href="">Politique de confidentialité</a>
-        <div class="w-px h-4 bg-gray-600"></div>
+    <a href="">Politique de confidentialité</a>
+    <div class="w-px h-4 bg-gray-600"></div>
 
-        <a href="">Politique relative aux cookies </a>
-        <div class="w-px h-4 bg-gray-600"></div>
+    <a href="">Politique relative aux cookies </a>
+    <div class="w-px h-4 bg-gray-600"></div>
 
-        <a href="">Accessibilité</a>
-        <div class="w-px h-4 bg-gray-600"></div>
+    <a href="">Accessibilité</a>
+    <div class="w-px h-4 bg-gray-600"></div>
 
-        <a href="">information sur les publicités</a>
-        <div class="w-px h-4 bg-gray-600"></div>
+    <a href="">information sur les publicités</a>
+    <div class="w-px h-4 bg-gray-600"></div>
 
-        <a href="">Blog</a>
-        <div class="w-px h-4 bg-gray-600"></div>
+    <a href="">Blog</a>
+    <div class="w-px h-4 bg-gray-600"></div>
 
-        <a href="">Carrières</a>
-        <div class="w-px h-4 bg-gray-600"></div>
+    <a href="">Carrières</a>
+    <div class="w-px h-4 bg-gray-600"></div>
 
-        <a href="">Ressource de la marque </a>
-        <div class="w-px h-4 bg-gray-600"></div>
+    <a href="">Ressource de la marque </a>
+    <div class="w-px h-4 bg-gray-600"></div>
 
-        <a href="">Publicité</a>
-        <div class="w-px h-4 bg-gray-600"></div>
+    <a href="">Publicité</a>
+    <div class="w-px h-4 bg-gray-600"></div>
 
-        <a href="">X pour les professionnels</a>
-        <div class="w-px h-4 bg-gray-600"></div>
+    <a href="">X pour les professionnels</a>
+    <div class="w-px h-4 bg-gray-600"></div>
 
-        <a href="">Développeurs</a>
-        <div class="w-px h-4 bg-gray-600"></div>
+    <a href="">Développeurs</a>
+    <div class="w-px h-4 bg-gray-600"></div>
 
-        <a href="">Répertoire</a>
-        <div class="w-px h-4 bg-gray-600"></div>
+    <a href="">Répertoire</a>
+    <div class="w-px h-4 bg-gray-600"></div>
 
-        <a href="">Paramètres</a>
-        <div class="w-px h-4 bg-gray-600"></div>
-    </div>
-    <p class="text-gray-600">&copy; 2025 X carp</p>
+    <a href="">Paramètres</a>
+    <div class="w-px h-4 bg-gray-600"></div>
+  </div>
+  <p class="text-gray-600">&copy; 2025 X carp</p>
 </footer>
 
-  @endslot
+@endslot
 @end

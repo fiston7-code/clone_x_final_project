@@ -12,8 +12,7 @@
 
         <!-- Logo -->
         <div class="flex justify-center mb-4">
-            <i class="fa-brands fa-x-twitter "></i
-            >
+            <img src="/twitter.png" alt="logo" class="w-8 h-8">
         </div>
 
         <!-- Titre -->
@@ -23,17 +22,22 @@
 
         <!-- Boutons OAuth -->
         <div class="space-y-3 mt-6">
-            <button class="flex items-center justify-center  w-full bg-white text-black font-semibold py-2 rounded-full hover:bg-gray-200 transition">
-          <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="w-5 h-5 mr-2" />
-          Se connecter avec Google
-        </button>
+            <!-- Bouton Google OAuth -->
+            <a href="/auth/google/redirect"
+                class="flex items-center justify-center w-full bg-white text-black font-semibold py-2 rounded-full hover:bg-gray-200 transition">
+                <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="w-5 h-5 mr-2" />
+                Se connecter avec Google
+            </a>
 
-            <button class="flex items-center justify-center w-full bg-white text-black font-semibold py-2 rounded-full hover:bg-gray-200 transition">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" class="w-5 h-5 mr-2 fill-black">
-            <path d="M318.7 268.7c-.2-37.7 16.4-66.2 50-87.2-18.9-27.3-47.4-42.3-84.7-45.2-35.5-2.8-74.2 20.7-88.3 20.7-14.7 0-49.5-19.7-76.6-19.7C72.3 137.3 0 184.8 0 290.5c0 28.6 5.4 57.4 16.1 86.3C31 420.3 80.4 512 135.7 510.3c25.3-.6 43.1-18.1 75.8-18.1 32.3 0 48.9 18.1 76.5 18.1 55.8-1 101.6-83.7 116.5-133.6-74.4-35.2-85.8-103.6-85.8-108zM251.7 90.5C275.2 61.2 272 33.7 271.5 32c-25.7 1.5-55.5 17-73.3 38.3-16.1 19-28.8 45.6-25.1 72.1 27.8 2.1 53.3-13.7 78.6-51.9z" />
-          </svg>
-          Se connecter avec Apple
-        </button>
+
+            <button
+                class="flex items-center justify-center w-full bg-white text-black font-semibold py-2 rounded-full hover:bg-gray-200 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" class="w-5 h-5 mr-2 fill-black">
+                    <path
+                        d="M318.7 268.7c-.2-37.7 16.4-66.2 50-87.2-18.9-27.3-47.4-42.3-84.7-45.2-35.5-2.8-74.2 20.7-88.3 20.7-14.7 0-49.5-19.7-76.6-19.7C72.3 137.3 0 184.8 0 290.5c0 28.6 5.4 57.4 16.1 86.3C31 420.3 80.4 512 135.7 510.3c25.3-.6 43.1-18.1 75.8-18.1 32.3 0 48.9 18.1 76.5 18.1 55.8-1 101.6-83.7 116.5-133.6-74.4-35.2-85.8-103.6-85.8-108zM251.7 90.5C275.2 61.2 272 33.7 271.5 32c-25.7 1.5-55.5 17-73.3 38.3-16.1 19-28.8 45.6-25.1 72.1 27.8 2.1 53.3-13.7 78.6-51.9z" />
+                </svg>
+                Se connecter avec Apple
+            </button>
         </div>
 
         <!-- Séparateur -->
@@ -62,7 +66,7 @@
             })
 
 
-             @!component('components/button', { text: 'Se connecter' })
+            @!component('components/button', { text: 'Se connecter' })
 
             <div class="flex items-center justify-between text-sm text-gray-400">
                 <label class="flex items-center">
@@ -81,6 +85,12 @@
         @if(flashMessages.has('error'))
         <p class="bg-red-100 text-red-700 p-3 rounded-md mt-4">
             {{ flashMessages.get('error') }}
+        </p>
+        @endif
+
+        @if(flashMessages.has('success'))
+        <p class="bg-white text-green p-3 rounded-md mt-4">
+            {{ flashMessages.get('success') }}
         </p>
         @endif
 

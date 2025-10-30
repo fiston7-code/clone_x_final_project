@@ -1,0 +1,88 @@
+
+@layout.ai({ title: "Welcome page title" })
+  @slot('meta')
+    <meta name="description" content="A welcome page made with EdgeJS">
+  @endslot
+
+  @slot('main')
+     <div id="chat-container"></div>
+
+  <div id="input-area">
+      <input type="text" id="message" placeholder="Écris ton message..." />
+    <button id="send">Envoyer</button>
+
+    </form>
+  </div>
+
+  <script>
+    const chat = document.getElementById("chat-container");
+    const input = document.getElementById("message");
+    const send = document.getElementById("send");
+
+    const apiKey = "75f2UHxSd6Z0wbIccACRWgutf8guJ41k"; // ⚠️ temporaire côté client
+
+    function appendMessage(text, sender) {
+      const msg = document.createElement("div");
+      msg.className = `message ${sender}`;
+      msg.innerHTML = marked.parse(text);
+      chat.appendChild(msg);
+      hljs.highlightAll();
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const content = input.value.trim();
+      if (!content) return;
+
+      appendMessage(content, "user");
+      input.value = "";
+
+      const loading = document.createElement("div");
+      loading.className = "message ai";
+      loading.textContent = "⏳ L’IA réfléchit...";
+      chat.appendChild(loading);
+      chat.scrollTop = chat.scrollHeight;
+
+      try {
+        const res = await fetch("https://api.mistral.ai/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": `Bearer ${apiKey}`
+          },
+          body: JSON.stringify({
+            model: "mistral-small-latest",
+            messages: [{ role: "user", content }]
+          })
+        });
+
+        const data = await res.json();
+        chat.removeChild(loading);
+
+        if (data.choices && data.choices[0]) {
+          const reply = data.choices[0].message.content;
+          appendMessage(reply, "ai");
+          if (window.MathJax) MathJax.typesetPromise();
+        } else {
+          appendMessage(`Erreur : ${JSON.stringify(data)}`, "ai");
+        }
+      } catch (err) {
+        chat.removeChild(loading);
+        appendMessage(`Erreur de connexion : ${err.message}`, "ai");
+      }
+    }
+
+    send.addEventListener("click", sendMessage);
+    input.addEventListener("keypress", e => {
+      if (e.key === "Enter") sendMessage();
+    });
+  </script>
+  @endslot
+@end
+
+
+
+
+
+

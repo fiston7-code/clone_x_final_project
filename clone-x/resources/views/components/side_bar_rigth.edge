@@ -80,26 +80,28 @@
         </div>
 
         <!-- Suggestions -->
-        <div class="bg-gray-900 rounded-2xl p-4 m-4">
-            <h3 class="text-xl font-bold mb-4 text-white">Who to follow</h3>
-            <div class="space-y-3">
-                {{-- @each(suggest in suggestions) --}}
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                        <img src="" class="w-10 h-10 rounded-full object-cover">
-                        <div>
-                            <p class="font-semibold"></p>
-                            <p class="text-gray-500 text-sm">@{{ suggest.username }}</p>
-                        </div>
-                    </div>
-                    <button
-                        class="bg-white text-black font-semibold px-3 py-1 rounded-full hover:bg-gray-200 transition">
-                        Follow
-                    </button>
+       <div class="bg-gray-900 rounded-2xl p-4 m-4 w-full max-w-sm mx-auto shadow-lg">
+    <h3 class="text-xl font-bold mb-4 text-white">Who to follow</h3>
+    <div class="space-y-4">
+        {{-- @each(suggest in suggestions) --}}
+        <div class="flex items-center justify-between bg-gray-800 hover:bg-gray-700 p-3 rounded-xl transition">
+            <div class="flex items-center space-x-3">
+                <img src="@{{ suggest.avatar || '/uploads/default-avatar.png' }}" 
+                     alt="@{{ suggest.username }}" 
+                     class="w-12 h-12 rounded-full object-cover border-2 border-gray-700">
+                <div>
+                    <p class="font-semibold text-white">@{{ suggest.name }}</p>
+                    <p class="text-gray-400 text-sm">@{{ suggest.username }}</p>
                 </div>
-                {{-- @endeach --}}
             </div>
+            <button class="bg-blue-500 text-white font-semibold px-4 py-1 rounded-full hover:bg-blue-600 transition">
+                Follow
+            </button>
         </div>
+        {{-- @endeach --}}
+    </div>
+</div>
+
         @endif
 
     </div>

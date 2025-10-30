@@ -21,6 +21,7 @@ export default class AuthController {
     return view.render('pages/home_x')
   }
 
+
   // store users in the database
   public async storeUser({ request, response, session }: HttpContext) {
     try {

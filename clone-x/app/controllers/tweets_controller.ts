@@ -13,6 +13,12 @@ export default class TweetsController {
     return view.render('pages/home_x', { users: users })
   }
 
+    public async showAI({ view}: HttpContext) {
+      return view.render('pages/AI')
+  
+  }
+
+
   // sauvegarde le tweet dans la base de donne
 
   public async storeTweet({ request, response, auth, session }: HttpContext) {

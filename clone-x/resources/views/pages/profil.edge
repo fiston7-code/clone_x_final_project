@@ -62,9 +62,6 @@
             </form>
             @endif
 
-
-
-
             @if(auth.user && auth.user.id === user.id)
             <button onclick="document.getElementById('edit-modal').showModal()"
                 class="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-full text-sm transition">
@@ -252,12 +249,6 @@
 
 </div>
 
-<nav
-    class="fixed bottom-0 left-0 right-0 bg-black border-t border-gray-800 flex justify-around py-3 text-gray-400 md:hidden">
-    <a href="{{ route('home.show') }}" class="hover:text-blue-400"><i class="fa-solid fa-house text-lg"></i></a>
-    <a href="#" class="hover:text-blue-400"><i class="fa-solid fa-magnifying-glass text-lg"></i></a>
-    <a href="#" class="hover:text-blue-400"><i class="fa-regular fa-bell text-lg"></i></a>
-    <a href="#" class="hover:text-blue-400"><i class="fa-regular fa-envelope text-lg"></i></a>
-</nav>
+
 @endslot
 @end

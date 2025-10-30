@@ -21,6 +21,7 @@ const FollowsController = () => import('#controllers/profil_controller')
 const SearchesController = () => import('#controllers/searches_controller')
 const RequestsController = () => import('#controllers/requests_controller')
 const BlocksController = () => import('#controllers/blocks_controller')
+const GroksController = () => import('#controllers/groks_controller')
 
 // router.on('/').render('pages/home')
 
@@ -33,7 +34,12 @@ router.get('/search', [SearchesController, 'search']).as('search').use(middlewar
 router
   .post('/update', [FollowsController, 'updateUserInfo'])
   .as('update.user')
-  .use(middleware.auth())
+  
+
+// router.get('/AI', [TweetsController, 'showAI'])
+//   .as('show.AI')
+
+  router.get('/AI', [GroksController, 'showAI']).as('show.AI').use(middleware.auth())
 
 // routes auth with google
 

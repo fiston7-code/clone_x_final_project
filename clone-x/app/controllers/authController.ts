@@ -60,4 +60,19 @@ export default class AuthController {
       return response.redirect().back()
     }
   }
+
+  // Vérification de l'email
+public async verifyEmail({ params, response }: HttpContext) {
+  const user = await User.findBy('verificationToken', params.token)
+
+  if (!user) {
+    return response.badRequest('Lien de vérification invalide')
+  }
+
+  user.isVerified = true
+  user.verificationToken = null
+  await user.save()
+
+  return response.redirect('/login') // ou une page "email confirmé"
+}
 }

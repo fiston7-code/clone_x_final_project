@@ -172,3 +172,6 @@ router.post('/postTweets', [TweetsController, 'storeTweet']).as('postTweet').use
 router.post('/send', '#controllers/authController.email')
 
 router.get('/sendEmail', [AuthController, 'showEmail']).as('email')
+// routes.ts
+router.get('/verify/:token', [AuthController, 'verifyEmail'])
+

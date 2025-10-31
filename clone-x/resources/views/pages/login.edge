@@ -77,8 +77,6 @@
                     Mot de passe oublié ?
                 </a>
             </div>
-
-
         </form>
 
         <!-- Flash message d'erreur -->
@@ -89,7 +87,7 @@
         @endif
 
         @if(flashMessages.has('success'))
-        <p class="bg-white text-green p-3 rounded-md mt-4">
+        <p class="bg-white text-black p-3 rounded-md mt-4">
             {{ flashMessages.get('success') }}
         </p>
         @endif
